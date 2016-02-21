@@ -21,10 +21,6 @@ public class BackendServer {
                 return hostIP;
             }
 
-        /*
-         * Above method often returns "127.0.0.1", In this case we need to
-         * check all the available network interfaces
-         */
             Enumeration<NetworkInterface> nInterfaces = NetworkInterface
                     .getNetworkInterfaces();
             while (nInterfaces.hasMoreElements()) {

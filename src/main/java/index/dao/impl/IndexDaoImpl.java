@@ -2,16 +2,17 @@ package index.dao.impl;
 
 import base.md.MdIndex;
 import index.dao.IndexDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 /**
  * Created by Mr-yang on 16-2-18.
  */
 public class IndexDaoImpl implements IndexDao {
-    private static Logger logger = Logger.getLogger("IndexDaoImpl");
+    private static Logger logger = LoggerFactory.getLogger("IndexDaoImpl");
 
     private final Map<String, MdIndex> indexMap = new ConcurrentHashMap<String, MdIndex>();
 

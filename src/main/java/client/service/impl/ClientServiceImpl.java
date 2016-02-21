@@ -5,19 +5,19 @@ import base.md.MdPos;
 import base.rmiapi.backend.BackendOpsService;
 import base.rmiapi.index.IndexOpsService;
 import client.service.ClientService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 
 /**
  * Created by Mr-yang on 16-2-18.
  */
 public class ClientServiceImpl implements ClientService {
-    private static final AtomicInteger error = new AtomicInteger();
-    private static Logger logger = Logger.getLogger("ClientServiceImpl");
+    private static Logger logger = LoggerFactory.getLogger("ClientServiceImpl");
+
     private static IndexOpsService indexOps = RmiTool.getIndexOpsService();
 
     @Override

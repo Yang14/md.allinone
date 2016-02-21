@@ -1,7 +1,9 @@
 package backend.service.impl;
 
-import base.rmiapi.backend.BackendOpsService;
 import base.md.MdAttr;
+import base.rmiapi.backend.BackendOpsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -9,14 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 /**
  * Created by Mr-yang on 16-2-18.
  */
 public class BackendOpsServiceImpl extends UnicastRemoteObject implements BackendOpsService {
 
-    private static Logger logger = Logger.getLogger("BackendOpsServiceImpl");
+    private static Logger logger = LoggerFactory.getLogger("BackendOpsServiceImpl");
 
     private final Map<Long, ArrayList<String>> nameMap =
             new ConcurrentHashMap<Long, ArrayList<String>>();

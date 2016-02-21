@@ -2,24 +2,25 @@ package index.service.impl;
 
 import base.md.MdIndex;
 import base.md.MdPos;
+import base.rmiapi.index.IndexOpsService;
 import index.common.CommonModule;
 import index.common.CommonModuleImpl;
 import index.dao.IndexDao;
 import index.dao.impl.IndexDaoImpl;
-import base.rmiapi.index.IndexOpsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * Created by Mr-yang on 16-2-18.
  */
 public class IndexOpsServiceImpl extends UnicastRemoteObject implements IndexOpsService {
-    private static Logger logger = Logger.getLogger("IndexOpsServiceImpl");
+    private static Logger logger = LoggerFactory.getLogger("IndexOpsServiceImpl");
 
     private volatile boolean isInit = false;
 
