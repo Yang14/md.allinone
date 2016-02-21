@@ -6,7 +6,7 @@ import base.rmiapi.index.IndexOpsService;
 import index.common.CommonModule;
 import index.common.CommonModuleImpl;
 import index.dao.IndexDao;
-import index.dao.impl.IndexDaoImpl;
+import index.dao.impl.RocksdbDaoImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +24,8 @@ public class IndexOpsServiceImpl extends UnicastRemoteObject implements IndexOps
 
     private volatile boolean isInit = false;
 
-    private IndexDao indexDao = new IndexDaoImpl();
+//    private IndexDao indexDao = new IndexDaoImpl();
+    private IndexDao indexDao = new RocksdbDaoImpl();
 
     private CommonModule commonModule = new CommonModuleImpl();
 
