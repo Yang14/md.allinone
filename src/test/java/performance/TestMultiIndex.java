@@ -17,7 +17,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * Created by Mr-yang on 16-2-22.
  */
-public class TestIndex {
+public class TestMultiIndex {
     private static Logger logger = LoggerFactory.getLogger("TestIndex");
 
     private IndexDao indexDao = new RocksdbDaoImpl();
@@ -26,20 +26,66 @@ public class TestIndex {
     private int threadCount = 3;
     private CountDownLatch latch = new CountDownLatch(threadCount);
 
+
+    class CreateIndex implements Runnable {
+
+        @Override
+        public void run() {
+            testCreateOneMillionIndexUsedTimeAndSize();
+            latch.countDown();
+        }
+    }
+
+    class FindIndex implements Runnable {
+
+        @Override
+        public void run() {
+            testGetIndexRandom();
+            latch.countDown();
+        }
+    }
+
+    /**
+     * 测试多个线程并发创建100w索引数据需要的时间
+     */
+    @Test
+    public void testMultiCreate() throws InterruptedException {
+        long count = 1000000;
+        long start = System.currentTimeMillis();
+        for (long i = 0; i < threadCount; ++i) {
+            new Thread(new CreateIndex(), "thread" + i).start();
+        }
+        latch.await();
+        long end = System.currentTimeMillis();
+        logger.info(String.format("% thread create w% index, use time: %sms", threadCount, count, (end - start)));
+    }
+
     /**
      * 测试创建100w索引数据需要的时间和空间
      */
     @Test
     public void testCreateOneMillionIndexUsedTimeAndSize() {
         long parentCode = 0L;
-        String dirName = "dir";
+        String dirName = Thread.currentThread().getName();
         long count = 1000000;
-        long start = System.currentTimeMillis();
         for (long i = 0; i < count; ++i) {
             indexDao.insertMdIndex(buildKey(parentCode, dirName + i), genDirIndex(i, commonModule.genDCode()));
         }
+    }
+
+    /**
+     * 测试多个线程并发创建100w索引数据需要的时间
+     */
+    @Test
+    public void testMultiFind() throws InterruptedException {
+        long count = 100000;
+        long start = System.currentTimeMillis();
+        for (long i = 0; i < threadCount; ++i) {
+            new Thread(new FindIndex(), "thread" + i).start();
+        }
+        latch.await();
         long end = System.currentTimeMillis();
-        logger.info(String.format("time: %sms", (end - start)));
+        logger.info(String.format("% thread find w% index, use time: %sms", threadCount, count, (end - start)));
     }
 
     /**
@@ -48,19 +94,13 @@ public class TestIndex {
     @Test
     public void testGetIndexRandom() {
         long parentCode = 0L;
-        String dirName = "dir";
+        String dirName = Thread.currentThread().getName();
         Random rand = new Random();
         int dirPrefix;
-        long start = System.currentTimeMillis();
         for (long i = 0; i < 100000; ++i) {
             dirPrefix = rand.nextInt(1000000);
-            if (i < 3) {
-                logger.info(indexDao.findMdIndex(buildKey(parentCode, dirName + dirPrefix)).toString());
-            }
             indexDao.findMdIndex(buildKey(parentCode, dirName + dirPrefix));
         }
-        long end = System.currentTimeMillis();
-        logger.info(String.format("time: %sms", (end - start)));
     }
 
     private MdIndex genDirIndex(long fCode, long dCode) {
