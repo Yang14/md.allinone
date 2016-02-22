@@ -1,6 +1,8 @@
-package index.network;
+package backend;
 
-import base.rmiapi.index.IndexOpsService;
+import base.md.MdAttr;
+import base.md.MdPos;
+import base.rmiapi.backend.BackendOpsService;
 import client.service.impl.RmiTool;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,28 +19,23 @@ import java.util.concurrent.CountDownLatch;
  * Created by Mr-yang on 16-2-22.
  * 使用多线程模拟客户端创建和查询索引
  */
-public class TestMultiIndexWithNet {
+public class TestMultiBackendWithNet {
     private static Logger logger = LoggerFactory.getLogger("TestMultiBackendWithNet");
     private int threadCount = 1;
-    private CountDownLatch startGate = new CountDownLatch(1);
     private CountDownLatch latch = new CountDownLatch(threadCount);
-
-    private IndexOpsService indexOps = RmiTool.getIndexOpsService();
 
     private Map<String, Long> createTimeMap = new ConcurrentHashMap<String, Long>();
     private Map<String, Long> findTimeMap = new ConcurrentHashMap<String, Long>();
 
     private final int createCount = 1000000 / threadCount;
 
-    private Map<Integer, String> pathMap;
+    private Map<Integer, Integer> dCodeMap;
 
     @Before
     public void setUp() {
-        pathMap = new HashMap<Integer, String>();
-        String pathStr = "/";
+        dCodeMap = new HashMap<Integer, Integer>();
         for (int i = 0; i < threadCount; i++) {
-            pathStr += i == 0 ? "d" + i : "/d" + i;
-            pathMap.put(i, pathStr);
+            dCodeMap.put(i, 100 + i);
         }
     }
 
@@ -48,10 +45,9 @@ public class TestMultiIndexWithNet {
      */
     @Test
     public void testMultiCreate() throws InterruptedException, RemoteException {
-        buildDirTreeBeforeTest();
         long start = System.currentTimeMillis();
         for (int i = 0; i < threadCount; ++i) {
-            new Thread(new CreateIndexWithNet(), pathMap.get(i)).start();
+            new Thread(new CreateIndexWithNet(), dCodeMap.get(i) + "").start();
         }
         latch.await();
         long end = System.currentTimeMillis();
@@ -67,7 +63,7 @@ public class TestMultiIndexWithNet {
     public void testMultiFind() throws InterruptedException {
         long start = System.currentTimeMillis();
         for (int i = 0; i < threadCount; ++i) {
-            new Thread(new FindIndexWithNet(), pathMap.get(i)).start();
+            new Thread(new FindIndexWithNet(), dCodeMap.get(i) + "").start();
         }
         latch.await();
         long end = System.currentTimeMillis();
@@ -81,41 +77,32 @@ public class TestMultiIndexWithNet {
      */
     @Test
     public void testCreateOneMillionIndexUsedTimeAndSize() throws RemoteException {
-        String parentPath = Thread.currentThread().getName();
-        String dirName = "dir";
+        long dCode = Long.parseLong(Thread.currentThread().getName());
+        String fileName = "file";
         long start = System.currentTimeMillis();
-        for (long i = 0; i < createCount; ++i) {
-            indexOps.createDirIndex(parentPath, dirName + i);
+        for (int i = 0; i < createCount; ++i) {
+            final BackendOpsService backendOpsService = RmiTool.getBackendOpsService(new MdPos("localhost", 9999, dCode));
+            backendOpsService.insertMd(dCode, fileName + i, getMdAttr(fileName + i, i, false));
+
         }
         long end = System.currentTimeMillis();
-        createTimeMap.put(parentPath, end - start);
+        createTimeMap.put(dCode + "", end - start);
     }
-
-    private void buildDirTreeBeforeTest() throws RemoteException {
-        pathMap = new HashMap<Integer, String>();
-        String pathStr = "/";
-        for (int i = 0; i < threadCount; i++) {
-            indexOps.createDirIndex(pathStr, "d" + i);
-            pathStr += i == 0 ? "d" + i : "/d" + i;
-            pathMap.put(i, pathStr);
-        }
-        startGate.countDown();
-    }
-
 
     /**
      * 测试随机读取10w索引的时间
      */
     @Test
     public void testGetIndexRandom() throws RemoteException {
-        String parentPath = Thread.currentThread().getName();
-        String dirPath = parentPath.equals("/") ? parentPath + "dir" : parentPath + "/dir";
+        long dCode = Long.parseLong(Thread.currentThread().getName());
+        String fileName = "file";
         long start = System.currentTimeMillis();
         for (long i = 0; i < createCount; ++i) {
-            indexOps.getMdPosList(dirPath + i);
+            final BackendOpsService backendOpsService = RmiTool.getBackendOpsService(new MdPos("localhost", 9999, dCode));
+            backendOpsService.findFileMd(dCode, fileName + i);
         }
         long end = System.currentTimeMillis();
-        findTimeMap.put(parentPath, end - start);
+        findTimeMap.put(dCode+"", end - start);
     }
 
     class CreateIndexWithNet implements Runnable {
@@ -123,11 +110,8 @@ public class TestMultiIndexWithNet {
         @Override
         public void run() {
             try {
-                startGate.await();
                 testCreateOneMillionIndexUsedTimeAndSize();
                 latch.countDown();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -145,6 +129,15 @@ public class TestMultiIndexWithNet {
                 e.printStackTrace();
             }
         }
+    }
+
+    private MdAttr getMdAttr(String name, int size, boolean isDir) {
+        MdAttr mdAttr = new MdAttr();
+        mdAttr.setName(name);
+        mdAttr.setSize(size);
+        mdAttr.setType(isDir);
+        mdAttr.setCreateTime(System.currentTimeMillis());
+        return mdAttr;
     }
 
 }
