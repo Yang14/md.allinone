@@ -15,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
  * Created by Mr-yang on 16-2-18.
  */
 public class TestClient {
-    private static Logger logger = LoggerFactory.getLogger("TestClientService");
+    private static Logger logger = LoggerFactory.getLogger("TestClient");
 
     private ClientService clientService = new ClientServiceImpl();
 
