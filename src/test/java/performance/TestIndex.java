@@ -24,9 +24,6 @@ public class TestIndex {
     private IndexDao indexDao = new RedisDaoImpl();
     private CommonModule commonModule = new CommonModuleImpl();
 
-    private int threadCount = 3;
-    private CountDownLatch latch = new CountDownLatch(threadCount);
-
     /**
      * 测试创建100w索引数据需要的时间和空间
      */
