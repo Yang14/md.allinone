@@ -1,6 +1,7 @@
 package backend;
 
 import backend.service.impl.BackendOpsServiceImpl;
+import backend.service.impl.RocksdbImpl;
 
 import java.net.*;
 import java.rmi.Naming;
@@ -45,7 +46,7 @@ public class BackendServer {
     public static void bindRemoteCall() throws RemoteException, MalformedURLException, UnknownHostException {
         LocateRegistry.createRegistry(PORT);
         String localIp = getMachineIP();
-        Naming.rebind("//" + localIp + ":" + PORT + "/BACKEND", new BackendOpsServiceImpl());
+        Naming.rebind("//" + localIp + ":" + PORT + "/BACKEND", new RocksdbImpl());
         System.out.println("BackendServer is ready." + localIp);
     }
 

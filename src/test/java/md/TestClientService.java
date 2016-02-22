@@ -4,18 +4,18 @@ import base.md.MdAttr;
 import client.service.ClientService;
 import client.service.impl.ClientServiceImpl;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
 /**
  * Created by Mr-yang on 16-2-18.
  */
 public class TestClientService {
-    private static Logger logger = Logger.getLogger("TestClientService");
+    private static Logger logger = LoggerFactory.getLogger("TestClientService");
 
     private ClientService clientService = new ClientServiceImpl();
 
-    @Test
     public void buildDirTree(String dir) throws RemoteException {
         long start = System.currentTimeMillis();
         String secondDir = dir;
@@ -41,7 +41,7 @@ public class TestClientService {
     @Test
     public void testBuildDirTreePerform() throws RemoteException {
         String dirName = "bin";
-        for (int i=0;i<5;i++){
+        for (int i=0;i<1;i++){
             buildDirTree(dirName+i);
         }
     }
@@ -70,12 +70,22 @@ public class TestClientService {
     }
 
     @Test
-    public void testListDir() throws RemoteException {
+    public void testListDir() throws RemoteException, InterruptedException {
         long start = System.currentTimeMillis();
-        logger.info(clientService.listDir("/").toString());
-        logger.info(clientService.listDir("/bin1").toString());
+        logger.info(clientService.listDir("/bin01").size()+"");
+//        logger.info(clientService.listDir("/bin1").toString());
         long end = System.currentTimeMillis();
         logger.info(String.format("time: %s", (end - start)));
+
+        //clientService.createDirMd("/","a",getMdAttr("a",0,true));
+        clientService.createDirMd("/a","b",getMdAttr("b",0,true));
+        clientService.createDirMd("/a","e",getMdAttr("e",0,true));
+        logger.info(clientService.listDir("/a").toString());
+        clientService.createDirMd("/a","d",getMdAttr("d",0,true));
+        logger.info(clientService.listDir("/a").toString());
+        clientService.createDirMd("/a", "c", getMdAttr("c", 0, true));
+        logger.info(clientService.listDir("/a").size()+"");
+
     }
 
     @Test
