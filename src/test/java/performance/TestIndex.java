@@ -4,6 +4,7 @@ import base.md.MdIndex;
 import index.common.CommonModule;
 import index.common.CommonModuleImpl;
 import index.dao.IndexDao;
+import index.dao.impl.RedisDaoImpl;
 import index.dao.impl.RocksdbDaoImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ import java.util.concurrent.CountDownLatch;
 public class TestIndex {
     private static Logger logger = LoggerFactory.getLogger("TestIndex");
 
-    private IndexDao indexDao = new RocksdbDaoImpl();
+    private IndexDao indexDao = new RedisDaoImpl();
     private CommonModule commonModule = new CommonModuleImpl();
 
     private int threadCount = 3;
@@ -39,7 +40,7 @@ public class TestIndex {
             indexDao.insertMdIndex(buildKey(parentCode, dirName + i), genDirIndex(i, commonModule.genDCode()));
         }
         long end = System.currentTimeMillis();
-        logger.info(String.format("time: %sms", (end - start)));
+        logger.info(String.format("use redis, single thread create %s index, use time: %sms", count, (end - start)));
     }
 
     /**
@@ -52,12 +53,9 @@ public class TestIndex {
         Random rand = new Random();
         int dirPrefix;
         long start = System.currentTimeMillis();
-        for (long i = 0; i < 100000; ++i) {
-            dirPrefix = rand.nextInt(1000000);
-            if (i < 3) {
-                logger.info(indexDao.findMdIndex(buildKey(parentCode, dirName + dirPrefix)).toString());
-            }
-            indexDao.findMdIndex(buildKey(parentCode, dirName + dirPrefix));
+        for (long i = 0; i < 300000; ++i) {
+            //dirPrefix = rand.nextInt(1000000);
+            indexDao.findMdIndex(buildKey(parentCode, dirName + i));
         }
         long end = System.currentTimeMillis();
         logger.info(String.format("time: %sms", (end - start)));

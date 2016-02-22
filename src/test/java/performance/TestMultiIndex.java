@@ -57,7 +57,7 @@ public class TestMultiIndex {
         }
         latch.await();
         long end = System.currentTimeMillis();
-        logger.info(String.format("% thread create w% index, use time: %sms", threadCount, count, (end - start)));
+        logger.info(String.format("%s thread create %sw index, use time: %sms", threadCount, count, (end - start)));
     }
 
     /**
@@ -85,7 +85,7 @@ public class TestMultiIndex {
         }
         latch.await();
         long end = System.currentTimeMillis();
-        logger.info(String.format("% thread find w% index, use time: %sms", threadCount, count, (end - start)));
+        logger.info(String.format("%s thread find %sw index, use time: %sms", threadCount, count, (end - start)));
     }
 
     /**
