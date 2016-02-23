@@ -1,7 +1,7 @@
 package index.network;
 
 import base.rmiapi.index.IndexOpsService;
-import client.service.impl.RmiTool;
+import client.service.impl.ConnTool;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class TestMultiIndexWithNet {
     private CountDownLatch startGate = new CountDownLatch(1);
     private CountDownLatch latch = new CountDownLatch(threadCount);
 
-    private IndexOpsService indexOps = RmiTool.getIndexOpsService();
+    private IndexOpsService indexOps = ConnTool.getIndexOpsService();
 
     private Map<String, Long> createTimeMap = new ConcurrentHashMap<String, Long>();
     private Map<String, Long> findTimeMap = new ConcurrentHashMap<String, Long>();

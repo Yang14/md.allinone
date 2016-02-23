@@ -2,7 +2,6 @@ package client.service.impl;
 
 import base.md.MdAttr;
 import base.md.MdPos;
-import base.rmiapi.backend.BackendOpsService;
 import base.rmiapi.index.IndexOpsService;
 import client.service.ClientService;
 import org.slf4j.Logger;
@@ -17,32 +16,29 @@ import java.util.List;
  */
 public class ClientServiceImpl implements ClientService {
     private static Logger logger = LoggerFactory.getLogger("ClientServiceImpl");
-    private static IndexOpsService indexOps = RmiTool.getIndexOpsService();
+    private static IndexOpsService indexOps = ConnTool.getIndexOpsService();
 
+    private static SSDBImpl ssdbService = new SSDBImpl();
     @Override
     public boolean createFileMd(String parentDirPath, String fileName, MdAttr mdAttr) throws RemoteException {
         MdPosCacheTool.removeMdPosList(parentDirPath);
         MdPos mdPos = indexOps.getMdPosForCreateFile(parentDirPath);
-        final BackendOpsService backendOpsService = RmiTool.getBackendOpsService(mdPos);
-        return backendOpsService.insertMd(mdPos.getdCode(), fileName, mdAttr);
+        return ssdbService.insertMd(mdPos,fileName,mdAttr);
     }
 
     @Override
     public boolean createDirMd(String parentDirPath, String dirName, MdAttr mdAttr) throws RemoteException {
         MdPosCacheTool.removeMdPosList(parentDirPath);
         MdPos mdPos = indexOps.createDirIndex(parentDirPath, dirName);
-        final BackendOpsService backendOpsService = RmiTool.getBackendOpsService(mdPos);
-        return backendOpsService.insertMd(mdPos.getdCode(), dirName, mdAttr);
+        return ssdbService.insertMd(mdPos, dirName, mdAttr);
     }
 
     @Override
     public MdAttr findFileMd(String parentDirPath, String fileName) throws RemoteException {
         List<MdPos> mdPosList = getMdPosListByPath(parentDirPath);
         MdAttr mdAttr = null;
-        BackendOpsService backendOpsService;
         for (MdPos mdPos : mdPosList) {
-            backendOpsService = RmiTool.getBackendOpsService(mdPos);
-            mdAttr = backendOpsService.findFileMd(mdPos.getdCode(), fileName);
+            mdAttr = ssdbService.findFileMd(mdPos, fileName);
             if (mdAttr != null) {
                 break;
             }
@@ -54,10 +50,8 @@ public class ClientServiceImpl implements ClientService {
     public List<MdAttr> listDir(String dirPath) throws RemoteException {
         List<MdPos> mdPosList = getMdPosListByPath(dirPath);
         List<MdAttr> mdAttrList = new ArrayList<MdAttr>();
-        BackendOpsService backendOpsService;
         for (MdPos mdPos : mdPosList) {
-            backendOpsService = RmiTool.getBackendOpsService(mdPos);
-            List<MdAttr> partMdAttrList = backendOpsService.listDir(mdPos.getdCode());
+            List<MdAttr> partMdAttrList = ssdbService.listDir(mdPos);
             if (partMdAttrList != null) {
                 mdAttrList.addAll(partMdAttrList);
             }
@@ -69,10 +63,8 @@ public class ClientServiceImpl implements ClientService {
     public boolean renameDir(String parentDirPath, String oldName, String newName) throws RemoteException {
         List<MdPos> mdPosList = getMdPosListFromRenameDir(parentDirPath, oldName, newName);
         boolean renameResult = false;
-        BackendOpsService backendOpsService;
         for (MdPos mdPos : mdPosList) {
-            backendOpsService = RmiTool.getBackendOpsService(mdPos);
-            renameResult = backendOpsService.renameMd(mdPos.getdCode(), oldName, newName);
+            renameResult = ssdbService.renameMd(mdPos, oldName, newName);
             if (renameResult) {
                 break;
             }
@@ -84,10 +76,8 @@ public class ClientServiceImpl implements ClientService {
     public boolean renameFile(String parentDirPath, String oldName, String newName) throws RemoteException {
         List<MdPos> mdPosList = getMdPosListByPath(parentDirPath);
         boolean renameResult = false;
-        BackendOpsService backendOpsService;
         for (MdPos mdPos : mdPosList) {
-            backendOpsService = RmiTool.getBackendOpsService(mdPos);
-            renameResult = backendOpsService.renameMd(mdPos.getdCode(), oldName, newName);
+            renameResult = ssdbService.renameMd(mdPos, oldName, newName);
             if (renameResult) {
                 break;
             }

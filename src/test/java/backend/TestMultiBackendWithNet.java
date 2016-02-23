@@ -4,7 +4,7 @@ import base.PortEnum;
 import base.md.MdAttr;
 import base.md.MdPos;
 import base.rmiapi.backend.BackendOpsService;
-import client.service.impl.RmiTool;
+import client.service.impl.ConnTool;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -82,8 +82,6 @@ public class TestMultiBackendWithNet {
         String fileName = "file";
         long start = System.currentTimeMillis();
         for (int i = 0; i < createCount; ++i) {
-            final BackendOpsService backendOpsService = RmiTool.getBackendOpsService(new MdPos("localhost", PortEnum.BACKEND_PORT, dCode));
-            backendOpsService.insertMd(dCode, fileName + i, getMdAttr(fileName + i, i, false));
 
         }
         long end = System.currentTimeMillis();
@@ -99,8 +97,6 @@ public class TestMultiBackendWithNet {
         String fileName = "file";
         long start = System.currentTimeMillis();
         for (long i = 0; i < createCount; ++i) {
-            final BackendOpsService backendOpsService = RmiTool.getBackendOpsService(new MdPos("localhost", PortEnum.BACKEND_PORT, dCode));
-            backendOpsService.findFileMd(dCode, fileName + i);
         }
         long end = System.currentTimeMillis();
         findTimeMap.put(dCode+"", end - start);
