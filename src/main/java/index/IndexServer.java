@@ -1,5 +1,7 @@
 package index;
 
+import base.IpTool;
+import base.PortEnum;
 import index.service.impl.IndexOpsServiceImpl;
 
 import java.net.MalformedURLException;
@@ -11,12 +13,13 @@ import java.rmi.registry.LocateRegistry;
  * Created by Mr-yang on 16-2-17.
  */
 public class IndexServer {
-    private static final int PORT = 8888;
+    private static final int PORT = PortEnum.INDEX_PORT;
 
     public static void bindRemoteCall() throws RemoteException, MalformedURLException {
         LocateRegistry.createRegistry(PORT);
-        Naming.rebind("//localhost:" + PORT + "/INDEX",  new IndexOpsServiceImpl());
-        System.out.println("IndexServer is ready.");
+        String ip = IpTool.getMachineIP();
+        Naming.rebind("//" + ip + ":" + PORT + "/INDEX", new IndexOpsServiceImpl());
+        System.out.println("IndexServer is ready." + ip);
     }
 
     public static void main(String[] args) {

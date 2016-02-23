@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class ClientServiceImpl implements ClientService {
     private static Logger logger = LoggerFactory.getLogger("ClientServiceImpl");
-
     private static IndexOpsService indexOps = RmiTool.getIndexOpsService();
 
     @Override

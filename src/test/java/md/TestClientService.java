@@ -1,12 +1,14 @@
 package md;
 
 import base.md.MdAttr;
+import base.rmiapi.index.IndexOpsService;
 import client.service.ClientService;
 import client.service.impl.ClientServiceImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 /**
  * Created by Mr-yang on 16-2-18.
@@ -40,7 +42,7 @@ public class TestClientService {
 
     @Test
     public void testBuildDirTreePerform() throws RemoteException {
-        String dirName = "bin";
+        String dirName = "bin0";
         for (int i=0;i<1;i++){
             buildDirTree(dirName+i);
         }
@@ -112,5 +114,21 @@ public class TestClientService {
         mdAttr.setType(isDir);
         mdAttr.setCreateTime(System.currentTimeMillis());
         return mdAttr;
+    }
+
+    @Test
+    public void remoteCall() {
+        final int INDEX_PORT = 8888;
+        final String INDEX_IP = "rmi://192.168.0.13:";
+        IndexOpsService indexOps = null;
+        try {
+            indexOps = (IndexOpsService) Naming.lookup(INDEX_IP + INDEX_PORT + "/INDEX");
+            logger.info("get index ops ok.");
+            indexOps.createDirIndex("/","bin");
+            logger.info(indexOps.getMdPosList("/").toString());
+        } catch (Exception e) {
+            logger.error("error info:" + e.getMessage());
+        }
+
     }
 }

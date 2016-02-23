@@ -1,6 +1,7 @@
 package backend.service.impl;
 
 import base.md.MdAttr;
+import base.PortEnum;
 import base.rmiapi.backend.BackendOpsService;
 import com.alibaba.fastjson.JSON;
 import org.rocksdb.Options;
@@ -15,7 +16,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Mr-yang on 16-2-18.
@@ -28,7 +28,7 @@ public class RocksdbImpl extends UnicastRemoteObject implements BackendOpsServic
         super();
     }
 
-    private static Jedis jedis = new Jedis("192.168.0.13", 6379);
+    private static Jedis jedis = new Jedis("192.168.0.13", PortEnum.REDIS_PORT);
 
     private static final String DB_PATH = "/data/backend";
     private static Options options = new Options().setCreateIfMissing(true);

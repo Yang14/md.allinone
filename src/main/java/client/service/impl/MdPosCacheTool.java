@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MdPosCacheTool {
     private static final Map<String, List<MdPos>> posMap = new ConcurrentHashMap<String, List<MdPos>>();
 
+
     public static List<MdPos> getMdPosListFromCache(String path) {
         return posMap.get(path);
     }
