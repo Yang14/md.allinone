@@ -5,7 +5,6 @@ import base.md.MdAttr;
 import base.rmiapi.backend.BackendOpsService;
 import com.alibaba.fastjson.JSON;
 import org.nutz.ssdb4j.SSDBs;
-import org.nutz.ssdb4j.impl.SimpleClient;
 import org.nutz.ssdb4j.spi.Response;
 import org.nutz.ssdb4j.spi.SSDB;
 import org.slf4j.Logger;
