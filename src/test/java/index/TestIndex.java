@@ -23,7 +23,7 @@ public class TestIndex {
     private IndexDao indexDao = new RedisDaoImpl();
     private CommonModule commonModule = new CommonModuleImpl();
 
-    private int threadCount = 3;
+    private int threadCount = 1;
     private CountDownLatch latch = new CountDownLatch(threadCount);
 
     /**
