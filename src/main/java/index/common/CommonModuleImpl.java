@@ -1,5 +1,6 @@
 package index.common;
 
+import base.PortEnum;
 import base.md.MdPos;
 
 import java.util.ArrayList;
@@ -38,9 +39,9 @@ public class CommonModuleImpl implements CommonModule {
         } else {
             md.setIp("node-01");
         }
-        md.setIp("127.0.0.1");
+        md.setIp("192.168.0.13");
         md.setdCode(dCode);
-        md.setPort(9999);
+        md.setPort(PortEnum.BACKEND_PORT);
         return md;
     }
 

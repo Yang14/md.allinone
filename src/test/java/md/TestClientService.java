@@ -51,7 +51,7 @@ public class TestClientService {
     @Test
     public void testListDirTree() throws RemoteException {
         long start = System.currentTimeMillis();
-        String secondDir = "bin2";
+        String secondDir = "bin00";
         for (int i = 0; i < 100; i++) {
             clientService.listDir("/" + secondDir + i);
         }

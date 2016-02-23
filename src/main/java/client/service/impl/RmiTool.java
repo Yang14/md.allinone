@@ -1,5 +1,6 @@
 package client.service.impl;
 
+import base.PortEnum;
 import base.md.MdPos;
 import base.rmiapi.backend.BackendOpsService;
 import base.rmiapi.index.IndexOpsService;
@@ -14,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by Mr-yang on 16-2-18.
  */
 public class RmiTool {
-    private static final int INDEX_PORT = 8888;
+    private static final int INDEX_PORT = PortEnum.INDEX_PORT;
     private static final String INDEX_IP = "rmi://192.168.0.13:";
     private static final Map<String, BackendOpsService> backendOpsMap =
             new ConcurrentHashMap<String, BackendOpsService>();

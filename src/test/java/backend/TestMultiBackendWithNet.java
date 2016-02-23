@@ -1,5 +1,6 @@
 package backend;
 
+import base.PortEnum;
 import base.md.MdAttr;
 import base.md.MdPos;
 import base.rmiapi.backend.BackendOpsService;
@@ -81,7 +82,7 @@ public class TestMultiBackendWithNet {
         String fileName = "file";
         long start = System.currentTimeMillis();
         for (int i = 0; i < createCount; ++i) {
-            final BackendOpsService backendOpsService = RmiTool.getBackendOpsService(new MdPos("localhost", 9999, dCode));
+            final BackendOpsService backendOpsService = RmiTool.getBackendOpsService(new MdPos("localhost", PortEnum.BACKEND_PORT, dCode));
             backendOpsService.insertMd(dCode, fileName + i, getMdAttr(fileName + i, i, false));
 
         }
@@ -98,7 +99,7 @@ public class TestMultiBackendWithNet {
         String fileName = "file";
         long start = System.currentTimeMillis();
         for (long i = 0; i < createCount; ++i) {
-            final BackendOpsService backendOpsService = RmiTool.getBackendOpsService(new MdPos("localhost", 9999, dCode));
+            final BackendOpsService backendOpsService = RmiTool.getBackendOpsService(new MdPos("localhost", PortEnum.BACKEND_PORT, dCode));
             backendOpsService.findFileMd(dCode, fileName + i);
         }
         long end = System.currentTimeMillis();
@@ -111,7 +112,7 @@ public class TestMultiBackendWithNet {
         public void run() {
             try {
                 testCreateOneMillionIndexUsedTimeAndSize();
-                testGetIndexRandom();
+              //  testGetIndexRandom();
                 latch.countDown();
             } catch (RemoteException e) {
                 e.printStackTrace();

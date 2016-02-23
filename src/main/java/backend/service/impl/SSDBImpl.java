@@ -4,6 +4,7 @@ import base.PortEnum;
 import base.md.MdAttr;
 import base.rmiapi.backend.BackendOpsService;
 import com.alibaba.fastjson.JSON;
+import org.nutz.ssdb4j.SSDBs;
 import org.nutz.ssdb4j.impl.SimpleClient;
 import org.nutz.ssdb4j.spi.Response;
 import org.nutz.ssdb4j.spi.SSDB;
@@ -22,7 +23,13 @@ import java.util.Map;
 public class SSDBImpl extends UnicastRemoteObject implements BackendOpsService {
     private static Logger logger = LoggerFactory.getLogger("SSDBImpl");
 
-    private static SSDB ssdb = new SimpleClient("127.0.0.1", PortEnum.SSDB_PORT, 10000);
+    private static SSDB ssdb = SSDBs.pool("127.0.0.1", PortEnum.SSDB_PORT, 10000,null);//new SimpleClient("127.0.0.1", PortEnum.SSDB_PORT, 10000);
+    /*private static ThreadLocal<SSDB> ssdbHolder =
+            new ThreadLocal<SSDB>(){
+                public SSDB initiValue(){
+                    return new SimpleClient("127.0.0.1", PortEnum.SSDB_PORT, 10000);
+                }
+            };*/
 
     public SSDBImpl() throws RemoteException {
         super();
@@ -53,8 +60,8 @@ public class SSDBImpl extends UnicastRemoteObject implements BackendOpsService {
     public boolean renameMd(long dCode, String oldName, String newName) throws RemoteException {
         MdAttr mdAttr =JSON.parseObject(ssdb.hget(dCode, oldName).asString(), MdAttr.class);
         mdAttr.setName(newName);
-        ssdb.hdel(dCode,oldName);
-        Response response = ssdb.hset(dCode,newName,JSON.toJSONString(mdAttr));
+        ssdb.hdel(dCode, oldName);
+        Response response = ssdb.hset(dCode, newName, JSON.toJSONString(mdAttr));
         return response.ok();
     }
 

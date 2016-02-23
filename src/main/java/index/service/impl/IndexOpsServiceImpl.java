@@ -27,8 +27,8 @@ public class IndexOpsServiceImpl extends UnicastRemoteObject implements IndexOps
     private volatile boolean isInit = false;
 
 //    private IndexDao indexDao = new IndexDaoImpl();
-//    private IndexDao indexDao = new RocksdbDaoImpl();
-    private IndexDao indexDao = new RedisDaoImpl();
+    private IndexDao indexDao = new RocksdbDaoImpl();
+//    private IndexDao indexDao = new RedisDaoImpl();
 
     private CommonModule commonModule = new CommonModuleImpl();
 
