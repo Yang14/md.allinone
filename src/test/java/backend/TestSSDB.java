@@ -1,6 +1,7 @@
 package backend;
 
 import base.md.MdAttr;
+import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.nutz.ssdb4j.impl.SimpleClient;
 import org.nutz.ssdb4j.spi.Response;
@@ -44,7 +45,7 @@ public class TestSSDB {
         long dCode = 10000;
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            ssdb.hset(dCode, "file" + i, getMdAttr("file" + i, i, false));
+            ssdb.hset(dCode, "file" + i, JSON.toJSONString(getMdAttr("file" + i, i, false)));
         }
         long end = System.currentTimeMillis();
         logger.info(String.format("single thread get %sw mdattr, use time: %sms", count, (end - start)));
@@ -53,12 +54,11 @@ public class TestSSDB {
     public void testHGet(){
         long dCode = 10000;
         Response response = ssdb.hgetall(dCode);
-        Map<String, Object> mdAttrMap = response.map();
+        Map<String, String> mdAttrMap = response.mapString();
         int i=10;
         for (String key : mdAttrMap.keySet()){
             if (i-- == 0) break;
-            MdAttr mdAttr = (MdAttr) mdAttrMap.get(key);
-            logger.info(mdAttr.toString() + " " + mdAttrMap.size());
+            logger.info(JSON.parseObject(mdAttrMap.get(key),MdAttr.class).toString());
         }
     }
 

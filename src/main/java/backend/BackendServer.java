@@ -1,6 +1,6 @@
 package backend;
 
-import backend.service.impl.RocksdbImpl;
+import backend.service.impl.SSDBImpl;
 import base.IpTool;
 import base.PortEnum;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class BackendServer {
     public static void bindRemoteCall() throws RemoteException, MalformedURLException, UnknownHostException {
         LocateRegistry.createRegistry(PORT);
         String localIp = IpTool.getMachineIP();
-        Naming.rebind("//" + localIp + ":" + PORT + "/BACKEND", new RocksdbImpl());
+        Naming.rebind("//" + localIp + ":" + PORT + "/BACKEND", new SSDBImpl());
         logger.info("BackendServer is ready." + localIp);
     }
 
