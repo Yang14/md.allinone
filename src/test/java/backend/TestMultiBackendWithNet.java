@@ -21,13 +21,13 @@ import java.util.concurrent.CountDownLatch;
  */
 public class TestMultiBackendWithNet {
     private static Logger logger = LoggerFactory.getLogger("TestMultiBackendWithNet");
-    private int threadCount = 1;
+    private int threadCount = 8;
     private CountDownLatch latch = new CountDownLatch(threadCount);
 
     private Map<String, Long> createTimeMap = new ConcurrentHashMap<String, Long>();
     private Map<String, Long> findTimeMap = new ConcurrentHashMap<String, Long>();
 
-    private final int createCount = 1000000 / threadCount;
+    private final int createCount = 100000 / threadCount;
 
     private Map<Integer, Integer> dCodeMap;
 
@@ -51,7 +51,7 @@ public class TestMultiBackendWithNet {
         }
         latch.await();
         long end = System.currentTimeMillis();
-        logger.info(String.format("with net: %s thread create %s index, use time: %sms", threadCount, createCount, (end - start)));
+        logger.info(String.format("with net: %s thread create %s mdAttr, use time: %sms", threadCount, createCount, (end - start)));
         // logger.info("each thread create index time spend is:" + createTimeMap);
     }
 
@@ -67,7 +67,7 @@ public class TestMultiBackendWithNet {
         }
         latch.await();
         long end = System.currentTimeMillis();
-        logger.info(String.format("%s thread find %sw index, use time: %sms", threadCount, createCount, (end - start)));
+        logger.info(String.format("%s thread find %s mdAttr, use time: %sms", threadCount, createCount, (end - start)));
         logger.info("each thread find index time spend is:" + findTimeMap);
     }
 
@@ -111,6 +111,7 @@ public class TestMultiBackendWithNet {
         public void run() {
             try {
                 testCreateOneMillionIndexUsedTimeAndSize();
+                testGetIndexRandom();
                 latch.countDown();
             } catch (RemoteException e) {
                 e.printStackTrace();
