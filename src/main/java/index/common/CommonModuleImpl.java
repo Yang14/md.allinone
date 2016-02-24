@@ -41,7 +41,7 @@ public class CommonModuleImpl implements CommonModule {
         }
         md.setIp("192.168.0.13");
         md.setdCode(dCode);
-        md.setPort(PortEnum.BACKEND_PORT);
+        md.setPort(PortEnum.SSDB_PORT);
         return md;
     }
 
