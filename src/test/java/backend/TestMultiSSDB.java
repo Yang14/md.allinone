@@ -23,14 +23,14 @@ import java.util.concurrent.CountDownLatch;
 public class TestMultiSSDB {
     private static Logger logger = LoggerFactory.getLogger("TestMultiSSDB");
 
-    private int threadCount = 1;
+    private int threadCount = 1000;
     private CountDownLatch totalLatch = new CountDownLatch(3);
     private CountDownLatch latch = new CountDownLatch(threadCount);
 
     private Map<String, Long> createTimeMap = new ConcurrentHashMap<String, Long>();
     private Map<String, Long> findTimeMap = new ConcurrentHashMap<String, Long>();
 
-    private final int createCount = 1000000 / threadCount;
+    private final int createCount = 2000 / threadCount;
 
     private Map<Integer, Integer> dCodeMap;
     private static SSDB ssdb = SSDBs.pool("127.0.0.1", PortEnum.SSDB_PORT, 10000, null);
