@@ -85,7 +85,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>backend.BackendServer</mainClass>
+                            <mainClass></mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

@@ -21,7 +21,7 @@ public class TestClientService {
     public void buildDirTree(String dir) throws RemoteException {
         long start = System.currentTimeMillis();
         String secondDir = dir;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             clientService.createDirMd("/", secondDir + i, getMdAttr(secondDir + i, i, true));
         }
         long end = System.currentTimeMillis();
@@ -30,8 +30,8 @@ public class TestClientService {
         String thirdDir = "foo";
         String thirdFile = "a.t";
         end = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++) {
-            for (int j = 0; j < 100; j++) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
                 clientService.createDirMd("/" + secondDir + i, thirdDir + j, getMdAttr(thirdDir + j, i, true));
                 clientService.createFileMd("/" + secondDir + i, thirdFile + j, getMdAttr(thirdFile + j, i, false));
             }
@@ -46,6 +46,7 @@ public class TestClientService {
         for (int i=0;i<1;i++){
             buildDirTree(dirName+i);
         }
+        logger.info(clientService.listDir("/").toString());
     }
 
     @Test
