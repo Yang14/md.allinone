@@ -94,10 +94,12 @@ public class TestClientService {
     @Test
     public void testRenameFile() throws RemoteException {
 //        logger.info(clientService.findFileMd("/bin0","a.t0").toString());
-        logger.info(clientService.listDir("/bin0").toString());
-        clientService.renameFile("/bin0", "a.t0", "renamed_a.t0");
-        logger.info(clientService.listDir("/bin0").toString());
-        logger.info(clientService.findFileMd("/bin0", "renamed_a.t0").toString());
+        clientService.createDirMd("/","bin00",getMdAttr("bin00",0,true));
+        clientService.createFileMd("/bin00","a.t0",getMdAttr("a.t0",10,false));
+        logger.info(clientService.listDir("/bin00").toString());
+        clientService.renameFile("/bin00", "a.t0", "renamed_a.t0");
+        logger.info(clientService.listDir("/bin00").toString());
+        logger.info(clientService.findFileMd("/bin00", "renamed_a.t0").toString());
     }
 
     @Test
